@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<title>MyDesk 🏠 Nader & Chiraz</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap"/>
+<style>
+:root {
+  --nader: #6366F1;   --nader-light: #EEF2FF;  --nader-dark: #4338CA;
+  --chiraz: #EC4899;  --chiraz-light: #FDF2F8; --chiraz-dark: #BE185D;
+  --success: #22C55E; --success-l: #DCFCE7;
+  --danger:  #EF4444; --danger-l:  #FEE2E2;
+  --warning: #F59E0B; --warning-l: #FEF3C7;
+  --bg: #F8F7FF;
+  --surface: #FFFFFF;
+  --border: #E8E4F0;
+  --text: #1E1B2E;
+  --text2: #6B7280;
+  --text3: #9CA3AF;
+  --radius: 14px;
+  --radius-lg: 20px;
+  --accent: var(--nader);
+  --accent-l: var(--nader-light);
+  --font: 'Nunito', system-ui, sans-serif;
+}
+.theme-chiraz { --accent: var(--chiraz); --accent-l: var(--chiraz-light); --bg: #FFF7FB; }
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100dvh;transition:background .3s}
+
+/* ===== LOGIN SCREEN ===== */
+#login-screen {
+  min-height:100dvh;display:flex;align-items:center;justify-content:center;
+  background: linear-gradient(135deg,#6366F1 0%,#EC4899 100%);
+  padding:20px;
+}
+.login-card {
+  background:#fff;border-radius:28px;padding:36px 28px;text-align:center;
+  max-width:340px;width:100%;
+  box-shadow:0 20px 60px rgba(99,102,241,.25);
+}
+.login-logo{font-size:48px;margin-bottom:8px}
+.login-title{font-size:26px;font-weight:800;color:var(--text);margin-bottom:4px}
+.login-sub{font-size:14px;color:var(--text2);margin-bottom:28px}
+.login-users{display:flex;gap:14px;justify-content:center}
+.user-btn {
+  flex:1;border:none;cursor:pointer;border-radius:20px;
+  padding:20px 14px;display:flex;flex-direction:column;align-items:center;gap:8px;
+  font-family:var(--font);transition:transform .15s,box-shadow .15s;
+}
+.user-btn:hover{transform:translateY(-3px)}
+.user-btn.nader{background:var(--nader-light);box-shadow:0 4px 20px rgba(99,102,241,.2)}
+.user-btn.chiraz{background:var(--chiraz-light);box-shadow:0 4px 20px rgba(236,72,153,.2)}
+.user-avatar{font-size:44px}
+.user-name{font-size:16px;font-weight:800}
+.user-btn.nader .user-name{color:var(--nader-dark)}
+.user-btn.chiraz .user-name{color:var(--chiraz-dark)}
+.user-role{font-size:11px;color:var(--text3);font-weight:600}
+
+/* ===== APP SHELL ===== */
+#app-screen{display:none;max-width:500px;margin:0 auto;padding-bottom:100px}
+
+/* HEADER */
+.app-header{
+  position:sticky;top:0;z-index:30;
+  background:var(--surface);
+  border-bottom:1px solid var(--border);
+  padding:12px 18px 0;
+}
+.header-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.app-brand{font-size:20px;font-weight:800;display:flex;align-items:center;gap:6px}
+.header-user{display:flex;align-items:center;gap:8px}
+.user-pill{
+  display:flex;align-items:center;gap:6px;
+  background:var(--accent-l);border-radius:20px;
+  padding:5px 12px 5px 6px;
+}
+.user-pill-avatar{font-size:18px}
+.user-pill-name{font-size:13px;font-weight:700;color:var(--accent)}
+.btn-switch{
+  height:30px;padding:0 10px;border:1.5px solid var(--border);
+  border-radius:20px;background:transparent;color:var(--text2);
+  font-size:12px;font-weight:600;cursor:pointer;font-family:var(--font);
+}
+
+/* NAV TABS */
+.tabs{display:flex;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{
+  flex-shrink:0;height:40px;padding:0 16px;border:none;background:transparent;
+  color:var(--text3);font-size:13px;font-weight:700;cursor:pointer;
+  border-bottom:3px solid transparent;white-space:nowrap;
+  font-family:var(--font);transition:color .2s,border-color .2s;
+}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+
+/* VIEW TOGGLE */
+.view-toggle{display:flex;gap:8px;padding:12px 18px 0}
+.vbtn{
+  height:30px;padding:0 14px;border:1.5px solid var(--border);
+  border-radius:20px;background:transparent;
+  font-size:12px;font-weight:700;cursor:pointer;font-family:var(--font);
+  transition:all .15s;
+}
+.vbtn.active{color:#fff;border-color:transparent}
+.vbtn-nader.active{background:var(--nader)}
+.vbtn-chiraz.active{background:var(--chiraz)}
+
+/* SECTIONS */
+.section{display:none;padding:14px 18px 0}
+.section.active{display:block}
+
+/* STAT STRIP */
+.stat-strip{display:flex;gap:8px;margin-bottom:14px}
+.stat-box{
+  flex:1;background:var(--surface);border:1.5px solid var(--border);
+  border-radius:var(--radius);padding:10px 10px;text-align:center;
+}
+.stat-n{font-size:22px;font-weight:800;line-height:1;margin-bottom:2px}
+.stat-l{font-size:10px;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.3px}
+
+/* GRAND TOTAL */
+.grand-total{
+  border-radius:var(--radius-lg);padding:16px 18px;
+  margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;
+  background:linear-gradient(120deg,var(--accent),var(--accent-dark,#7C3AED));
+}
+.gt-label{font-size:12px;font-weight:700;color:rgba(255,255,255,.75);margin-bottom:3px}
+.gt-value{font-size:26px;font-weight:800;color:#fff}
+.gt-icon{font-size:32px;opacity:.4}
+
+/* FORM CARD */
+.form-card{
+  background:var(--surface);border:1.5px solid var(--border);
+  border-radius:var(--radius-lg);padding:16px;margin-bottom:14px;
+}
+.form-title{font-size:14px;font-weight:800;color:var(--text);margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.frow{display:flex;gap:8px;margin-bottom:8px}
+.frow:last-of-type{margin-bottom:0}
+.fcol{display:flex;flex-direction:column;flex:1;min-width:0;gap:3px}
+.flabel{font-size:11px;font-weight:700;color:var(--text2)}
+input,select{
+  height:38px;border:1.5px solid var(--border);border-radius:10px;
+  padding:0 10px;font-size:14px;background:#F9F8FF;
+  color:var(--text);outline:none;width:100%;font-family:var(--font);font-weight:600;
+}
+input:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-l)}
+input::placeholder{color:var(--text3);font-weight:400}
+.btn-primary{
+  width:100%;height:42px;background:var(--accent);color:#fff;
+  border:none;border-radius:12px;font-size:15px;font-weight:800;
+  cursor:pointer;margin-top:10px;font-family:var(--font);
+  transition:opacity .15s,transform .1s;display:flex;align-items:center;justify-content:center;gap:6px;
+}
+.btn-primary:active{transform:scale(.97)}
+.err-msg{font-size:12px;color:var(--danger);margin-top:6px;display:none;font-weight:600}
+
+/* FILTERS */
+.filters{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}
+.fbtn{
+  height:28px;padding:0 12px;border:1.5px solid var(--border);
+  border-radius:20px;background:var(--surface);color:var(--text2);
+  font-size:12px;font-weight:700;cursor:pointer;font-family:var(--font);transition:all .15s;
+}
+.fbtn.active{color:#fff;border-color:transparent;background:var(--accent)}
+
+/* TASK ITEM */
+.item-list{display:flex;flex-direction:column;gap:8px}
+.task-item{
+  background:var(--surface);border:1.5px solid var(--border);
+  border-radius:var(--radius-lg);padding:13px 14px;
+  display:flex;align-items:flex-start;gap:10px;
+  transition:opacity .25s;
+}
+.task-item.done{opacity:.4}
+.task-item.done .task-title{text-decoration:line-through;color:var(--text3)}
+.task-item.readonly{opacity:.75}
+.chk{flex-shrink:0;margin-top:1px;cursor:pointer}
+.chk-circle{
+  width:22px;height:22px;border-radius:50%;border:2.5px solid var(--border);
+  display:flex;align-items:center;justify-content:center;transition:all .2s;
+}
+.chk-circle.on{background:var(--success);border-color:var(--success)}
+.chk-circle svg{display:none}
+.chk-circle.on svg{display:block}
+.task-body{flex:1;min-width:0}
+.task-title{font-size:14px;font-weight:700;margin-bottom:5px}
+.meta-row{display:flex;gap:5px;flex-wrap:wrap;align-items:center}
+.badge{display:inline-flex;align-items:center;height:20px;padding:0 8px;border-radius:20px;font-size:11px;font-weight:700}
+.p-high{background:var(--danger-l);color:var(--danger)}
+.p-med{background:var(--warning-l);color:var(--warning)}
+.p-low{background:var(--success-l);color:var(--success)}
+.tag-badge{background:var(--accent-l);color:var(--accent)}
+.date-chip{font-size:11px;color:var(--text3);display:flex;align-items:center;gap:3px;font-weight:600}
+.owner-chip{font-size:10px;font-weight:800;padding:2px 7px;border-radius:20px}
+.chip-nader{background:var(--nader-light);color:var(--nader)}
+.chip-chiraz{background:var(--chiraz-light);color:var(--chiraz-dark)}
+.icon-btn{
+  flex-shrink:0;width:30px;height:30px;border:none;background:transparent;
+  cursor:pointer;color:var(--text3);border-radius:8px;
+  display:flex;align-items:center;justify-content:center;font-size:16px;
+  transition:background .15s,color .15s;
+}
+.icon-btn:hover{background:var(--danger-l);color:var(--danger)}
+
+/* DEBT CARD */
+.debt-card{
+  background:var(--surface);border:1.5px solid var(--border);
+  border-radius:var(--radius-lg);overflow:hidden;
+}
+.debt-top{padding:14px}
+.debt-head{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px}
+.debt-name{font-size:16px;font-weight:800;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.paid-tag{font-size:10px;background:var(--success-l);color:var(--success);padding:3px 8px;border-radius:20px;font-weight:800}
+.debt-cat{font-size:11px;background:var(--accent-l);color:var(--accent);padding:3px 8px;border-radius:20px;font-weight:700}
+.amounts-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:10px 0 8px}
+.amt-box{background:#F9F8FF;border-radius:10px;padding:8px 10px}
+.amt-lbl{font-size:10px;color:var(--text3);margin-bottom:3px;font-weight:700;text-transform:uppercase;letter-spacing:.3px}
+.amt-val{font-size:15px;font-weight:800}
+.c-init{color:var(--text)}
+.c-paid{color:var(--success)}
+.c-rest{color:var(--danger)}
+.c-zero{color:var(--success)}
+.prog-wrap{height:6px;background:var(--border);border-radius:3px;overflow:hidden}
+.prog-bar{height:100%;background:linear-gradient(90deg,var(--success),#4ADE80);border-radius:3px;transition:width .4s}
+.prog-label{font-size:11px;color:var(--text3);text-align:right;margin-top:3px;font-weight:700}
+
+/* ACOMPTES */
+.acc-section{border-top:1.5px solid var(--border);background:#F9F8FF}
+.acc-toggle-row{display:flex;justify-content:space-between;align-items:center;padding:9px 14px;cursor:pointer}
+.acc-toggle-lbl{font-size:13px;font-weight:700;color:var(--text2)}
+.acc-body{padding:0 14px 10px}
+.acc-entry{display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:1px dashed var(--border)}
+.acc-entry:last-child{border-bottom:none}
+.acc-left{display:flex;align-items:center;gap:8px}
+.acc-dot{width:8px;height:8px;border-radius:50%;background:var(--success);flex-shrink:0}
+.acc-amt{font-size:14px;font-weight:800;color:var(--success)}
+.acc-date-lbl{font-size:11px;color:var(--text3);margin-top:1px;font-weight:600}
+.acc-del-btn{width:22px;height:22px;border:none;background:transparent;cursor:pointer;color:var(--text3);border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:12px}
+.acc-del-btn:hover{background:var(--danger-l);color:var(--danger)}
+.acc-add-row{display:flex;gap:6px;padding:6px 14px 12px}
+.acc-add-row input{height:34px;font-size:13px}
+.btn-acc-add{height:34px;padding:0 12px;background:var(--success);color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:800;cursor:pointer;white-space:nowrap;flex-shrink:0;font-family:var(--font)}
+
+/* NOTIFS */
+.notif-card{
+  background:var(--surface);border:1.5px solid var(--border);
+  border-radius:var(--radius-lg);padding:14px;
+  display:flex;align-items:flex-start;gap:10px;
+}
+.notif-icon{font-size:22px;flex-shrink:0}
+.notif-body{flex:1}
+.notif-title{font-size:14px;font-weight:700;margin-bottom:2px}
+.notif-sub{font-size:12px;color:var(--text3);font-weight:600}
+.notif-badge{font-size:10px;font-weight:800;padding:3px 8px;border-radius:20px;flex-shrink:0;align-self:flex-start}
+.nb-warn{background:var(--warning-l);color:var(--warning)}
+.nb-ok{background:var(--success-l);color:var(--success)}
+.nb-info{background:var(--accent-l);color:var(--accent)}
+.nb-danger{background:var(--danger-l);color:var(--danger)}
+.section-title{font-size:11px;font-weight:800;color:var(--text3);text-transform:uppercase;letter-spacing:.6px;margin:16px 0 8px;padding:0 2px}
+
+.empty-state{text-align:center;padding:40px 20px;color:var(--text3)}
+.empty-state .big{font-size:48px;margin-bottom:8px}
+.empty-state p{font-size:14px;font-weight:600}
+
+/* READONLY BANNER */
+.readonly-banner{
+  background:linear-gradient(90deg,var(--chiraz-light),var(--nader-light));
+  border-radius:var(--radius);padding:10px 14px;margin-bottom:12px;
+  font-size:13px;font-weight:700;color:var(--text2);
+  display:flex;align-items:center;gap:8px;
+}
+
+/* LOADING */
+#loading{
+  position:fixed;inset:0;background:rgba(255,255,255,.9);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  z-index:100;gap:12px;font-weight:700;color:var(--text2);font-size:15px;
+  font-family:var(--font);
+}
+.spinner{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* TOAST */
+.toast{
+  position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);
+  background:#1E1B2E;color:#fff;padding:10px 20px;border-radius:20px;
+  font-size:13px;font-weight:700;font-family:var(--font);
+  opacity:0;transition:all .3s;z-index:200;white-space:nowrap;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+
+<!-- LOADING -->
+<div id="loading">
+  <div class="spinner"></div>
+  Chargement…
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">🏠✨</div>
+    <div class="login-title">MyDesk</div>
+    <div class="login-sub">Tâches & Dettes — Nader & Chiraz</div>
+    <div class="login-users">
+      <button class="user-btn nader" onclick="login('nader')">
+        <div class="user-avatar">👨</div>
+        <div class="user-name">Nader</div>
+        <div class="user-role">Mon espace</div>
+      </button>
+      <button class="user-btn chiraz" onclick="login('chiraz')">
+        <div class="user-avatar">👩</div>
+        <div class="user-name">Chiraz</div>
+        <div class="user-role">Mon espace</div>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app-screen">
+  <div class="app-header">
+    <div class="header-top">
+      <div class="app-brand">🏠 MyDesk</div>
+      <div class="header-user">
+        <div class="user-pill">
+          <span class="user-pill-avatar" id="hp-avatar">👨</span>
+          <span class="user-pill-name" id="hp-name">Nader</span>
+        </div>
+        <button class="btn-switch" onclick="logout()">⇄ Changer</button>
+      </div>
+    </div>
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab('tasks',this)">✅ Tâches</button>
+      <button class="tab" onclick="switchTab('debts',this)">💰 Dettes</button>
+      <button class="tab" onclick="switchTab('notifs',this)">🔔 Rappels</button>
+    </div>
+  </div>
+
+  <!-- VIEW TOGGLE -->
+  <div class="view-toggle">
+    <button class="vbtn vbtn-nader active" id="vbtn-nader" onclick="setView('nader')">👨 Nader</button>
+    <button class="vbtn vbtn-chiraz" id="vbtn-chiraz" onclick="setView('chiraz')">👩 Chiraz</button>
+  </div>
+
+  <!-- ===== TÂCHES ===== -->
+  <div class="section active" id="sec-tasks">
+    <div style="height:12px"></div>
+    <div class="stat-strip">
+      <div class="stat-box"><div class="stat-n" id="s-total">0</div><div class="stat-l">Total</div></div>
+      <div class="stat-box"><div class="stat-n" style="color:var(--success)" id="s-done">0</div><div class="stat-l">✅ Faites</div></div>
+      <div class="stat-box"><div class="stat-n" style="color:var(--danger)" id="s-high">0</div><div class="stat-l">🔴 Urgentes</div></div>
+    </div>
+
+    <div class="form-card" id="task-form-card">
+      <div class="form-title">✏️ Nouvelle tâche</div>
+      <div class="frow">
+        <input type="text" id="t-title" placeholder="Titre de la tâche…"/>
+      </div>
+      <div class="frow">
+        <div class="fcol">
+          <div class="flabel">🎯 Priorité</div>
+          <select id="t-prio">
+            <option value="high">🔴 Haute</option>
+            <option value="med" selected>🟡 Moyenne</option>
+            <option value="low">🟢 Basse</option>
+          </select>
+        </div>
+        <div class="fcol">
+          <div class="flabel">🏷️ Catégorie</div>
+          <select id="t-tag">
+            <option>💼 Travail</option>
+            <option>🏠 Maison</option>
+            <option>❤️ Santé</option>
+            <option>📚 Études</option>
+            <option>🛒 Courses</option>
+            <option>🔖 Autre</option>
+          </select>
+        </div>
+        <div class="fcol">
+          <div class="flabel">📅 Échéance</div>
+          <input type="date" id="t-date"/>
+        </div>
+      </div>
+      <button class="btn-primary" onclick="addTask()">➕ Ajouter la tâche</button>
+      <div class="err-msg" id="err-t">⚠️ Saisis un titre.</div>
+    </div>
+    <div id="readonly-task-banner"></div>
+    <div class="filters" id="task-filters">
+      <button class="fbtn active" onclick="setTF('all',this)">Tout</button>
+      <button class="fbtn" onclick="setTF('active',this)">En cours</button>
+      <button class="fbtn" onclick="setTF('done',this)">Terminées</button>
+      <button class="fbtn" onclick="setTF('high',this)">🔴 Urgentes</button>
+    </div>
+    <div class="item-list" id="task-list"></div>
+  </div>
+
+  <!-- ===== DETTES ===== -->
+  <div class="section" id="sec-debts">
+    <div style="height:12px"></div>
+    <div class="grand-total" id="grand-total-bar">
+      <div>
+        <div class="gt-label">💸 Total restant dû</div>
+        <div class="gt-value" id="d-grand-total">0,00 DT</div>
+      </div>
+      <div class="gt-icon">💰</div>
+    </div>
+    <div class="stat-strip">
+      <div class="stat-box"><div class="stat-n" style="color:var(--danger)" id="d-active">0</div><div class="stat-l">En cours</div></div>
+      <div class="stat-box"><div class="stat-n" style="color:var(--success)" id="d-paid-c">0</div><div class="stat-l">✅ Soldées</div></div>
+      <div class="stat-box"><div class="stat-n" id="d-all">0</div><div class="stat-l">Total</div></div>
+    </div>
+
+    <div class="form-card" id="debt-form-card">
+      <div class="form-title">💰 Nouvelle dette</div>
+      <div class="frow">
+        <div class="fcol">
+          <div class="flabel">👤 Nom / Créancier</div>
+          <input type="text" id="d-name" placeholder="Ex: Plombier, Ali…"/>
+        </div>
+        <div class="fcol" style="max-width:130px">
+          <div class="flabel">🏷️ Catégorie</div>
+          <select id="d-cat">
+            <option>🔧 Service</option>
+            <option>👤 Personnel</option>
+            <option>🏥 Médical</option>
+            <option>🏪 Commerce</option>
+            <option>📌 Autre</option>
+          </select>
+        </div>
+      </div>
+      <div class="frow">
+        <div class="fcol">
+          <div class="flabel">💵 Montant initial (DT)</div>
+          <input type="number" id="d-initial" placeholder="Ex: 500" min="0" step="0.5"/>
+        </div>
+        <div class="fcol">
+          <div class="flabel">✅ 1er acompte (DT)</div>
+          <input type="number" id="d-first-amt" placeholder="0" min="0" step="0.5" value="0"/>
+        </div>
+        <div class="fcol">
+          <div class="flabel">📅 Date acompte</div>
+          <input type="date" id="d-first-date"/>
+        </div>
+      </div>
+      <div class="frow">
+        <div class="fcol">
+          <div class="flabel">📝 Note (optionnel)</div>
+          <input type="text" id="d-note" placeholder="Travaux, prêt personnel…"/>
+        </div>
+      </div>
+      <button class="btn-primary" onclick="addDebt()">➕ Ajouter la dette</button>
+      <div class="err-msg" id="err-d">⚠️ Nom et montant requis.</div>
+    </div>
+    <div id="readonly-debt-banner"></div>
+    <div class="filters" id="debt-filters">
+      <button class="fbtn active" onclick="setDF('all',this)">Tout</button>
+      <button class="fbtn" onclick="setDF('pending',this)">En cours</button>
+      <button class="fbtn" onclick="setDF('paid',this)">Soldées</button>
+    </div>
+    <div class="item-list" id="debt-list"></div>
+  </div>
+
+  <!-- ===== RAPPELS ===== -->
+  <div class="section" id="sec-notifs">
+    <div style="height:12px"></div>
+    <div class="form-card">
+      <div class="form-title">🔔 Nouveau rappel</div>
+      <div class="frow">
+        <div class="fcol">
+          <div class="flabel">✏️ Titre</div>
+          <input type="text" id="n-title" placeholder="Ex: Payer le plombier…"/>
+        </div>
+      </div>
+      <div class="frow">
+        <div class="fcol">
+          <div class="flabel">📅 Date</div>
+          <input type="date" id="n-date"/>
+        </div>
+        <div class="fcol">
+          <div class="flabel">🏷️ Type</div>
+          <select id="n-type">
+            <option value="debt">💰 Dette</option>
+            <option value="task">✅ Tâche</option>
+            <option value="other">📌 Autre</option>
+          </select>
+        </div>
+      </div>
+      <div class="frow">
+        <div class="fcol">
+          <div class="flabel">📝 Note</div>
+          <input type="text" id="n-note" placeholder="Détails…"/>
+        </div>
+      </div>
+      <button class="btn-primary" onclick="addNotif()">➕ Ajouter le rappel</button>
+      <div class="err-msg" id="err-n">⚠️ Titre et date requis.</div>
+    </div>
+    <div id="notif-list"></div>
+  </div>
+</div>
+
+<!-- FIREBASE SDK -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, doc, getDocs, addDoc, updateDoc, deleteDoc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+// ⚠️ REMPLACE CES VALEURS PAR TA CONFIG FIREBASE
+const firebaseConfig = {
+  apiKey: "AIzaSyBwy0r6JYRR7ab7Y0zT3Jtc7HOQvCTA3Z8",
+  authDomain: "mydesk-nc.firebaseapp.com",
+  projectId: "mydesk-nc",
+  storageBucket: "mydesk-nc.firebasestorage.app",
+  messagingSenderId: "421707778115",
+  appId: "1:421707778115:web:6f457ca172b0bdb2a5ecf6"
+};
+
+const fireApp = initializeApp(firebaseConfig);
+const db = getFirestore(fireApp);
+
+// ===== STATE =====
+let currentUser = null;   // 'nader' | 'chiraz'
+let viewUser    = null;   // qui on regarde
+let tFilter = 'all', dFilter = 'all';
+let currentTab = 'tasks';
+let unsubs = [];
+
+const PRIO = {
+  high:{ label:'🔴 Haute', cls:'p-high' },
+  med: { label:'🟡 Moyenne', cls:'p-med' },
+  low: { label:'🟢 Basse', cls:'p-low' }
+};
+const TYPE_ICON = { debt:'💰', task:'✅', other:'📌' };
+const USER_META = {
+  nader:  { emoji:'👨', color:'var(--nader)',  colorL:'var(--nader-light)',  label:'Nader',  chip:'chip-nader'  },
+  chiraz: { emoji:'👩', color:'var(--chiraz)', colorL:'var(--chiraz-light)', label:'Chiraz', chip:'chip-chiraz' }
+};
+
+function fmt(d){ if(!d) return ''; const[y,m,day]=d.split('-'); return `${day}/${m}/${y}`; }
+function fmtN(n){ return (+n).toFixed(2).replace('.',','); }
+function totalPaid(d){ return (d.acomptes||[]).reduce((s,a)=>s+a.amount,0); }
+function restant(d){ return Math.max(0, d.initial - totalPaid(d)); }
+function daysUntil(ds){ if(!ds) return null; return Math.ceil((new Date(ds)-new Date(new Date().toDateString()))/86400000); }
+
+function showLoading(v){ document.getElementById('loading').style.display = v?'flex':'none'; }
+function showToast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2500); }
+
+// ===== LOGIN / LOGOUT =====
+window.login = function(user) {
+  currentUser = user;
+  viewUser = user;
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('app-screen').style.display = 'block';
+  document.getElementById('hp-avatar').textContent = USER_META[user].emoji;
+  document.getElementById('hp-name').textContent = USER_META[user].label;
+  document.body.classList.toggle('theme-chiraz', user === 'chiraz');
+  updateViewBtns();
+  subscribeAll();
+  showLoading(false);
+  showToast(`Bienvenue ${USER_META[user].label} ${USER_META[user].emoji} !`);
+};
+
+window.logout = function() {
+  unsubs.forEach(fn=>fn());
+  unsubs=[];
+  currentUser=null; viewUser=null;
+  document.getElementById('app-screen').style.display='none';
+  document.getElementById('login-screen').style.display='flex';
+};
+
+// ===== TABS =====
+window.switchTab = function(name,btn){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+  document.getElementById('sec-'+name).classList.add('active');
+  btn.classList.add('active');
+  currentTab=name;
+  if(name==='notifs') renderNotifs();
+};
+
+// ===== VIEW (whose data we see) =====
+window.setView = function(user){
+  viewUser=user;
+  updateViewBtns();
+  subscribeAll();
+};
+
+function updateViewBtns(){
+  const nb=document.getElementById('vbtn-nader');
+  const cb=document.getElementById('vbtn-chiraz');
+  nb.classList.toggle('active',viewUser==='nader');
+  cb.classList.toggle('active',viewUser==='chiraz');
+  const isOwn = viewUser===currentUser;
+  document.getElementById('task-form-card').style.display = isOwn?'':'none';
+  document.getElementById('debt-form-card').style.display = isOwn?'':'none';
+  const meta = USER_META[viewUser];
+  const banner = isOwn ? '' : `<div class="readonly-banner">👁️ Tu vois le tableau de <strong>${meta.label}</strong> ${meta.emoji} — lecture seule</div>`;
+  document.getElementById('readonly-task-banner').innerHTML=banner;
+  document.getElementById('readonly-debt-banner').innerHTML=banner;
+}
+
+// ===== FIRESTORE SUBSCRIPTIONS =====
+let tasksData=[], debtsData=[], notifsData=[];
+
+function subscribeAll(){
+  unsubs.forEach(fn=>fn()); unsubs=[];
+  const u=viewUser;
+
+  const tq=query(collection(db,`users/${u}/tasks`),orderBy('createdAt','desc'));
+  unsubs.push(onSnapshot(tq,snap=>{
+    tasksData=snap.docs.map(d=>({id:d.id,...d.data()}));
+    renderTasks();
+  }));
+
+  const dq=query(collection(db,`users/${u}/debts`),orderBy('createdAt','desc'));
+  unsubs.push(onSnapshot(dq,snap=>{
+    debtsData=snap.docs.map(d=>({id:d.id,...d.data()}));
+    renderDebts();
+  }));
+
+  const nq=query(collection(db,`users/${viewUser}/notifs`),orderBy('createdAt','desc'));
+  unsubs.push(onSnapshot(nq,snap=>{
+    notifsData=snap.docs.map(d=>({id:d.id,...d.data()}));
+    if(currentTab==='notifs') renderNotifs();
+  }));
+}
+
+// ===== TASKS =====
+window.addTask = async function(){
+  const t=document.getElementById('t-title').value.trim();
+  const err=document.getElementById('err-t');
+  if(!t){err.style.display='block';return;} err.style.display='none';
+  await addDoc(collection(db,`users/${currentUser}/tasks`),{
+    title:t,
+    prio:document.getElementById('t-prio').value,
+    tag:document.getElementById('t-tag').value,
+    date:document.getElementById('t-date').value,
+    done:false,
+    createdAt:Date.now()
+  });
+  document.getElementById('t-title').value='';
+  document.getElementById('t-date').value='';
+  showToast('✅ Tâche ajoutée !');
+};
+document.getElementById('t-title').addEventListener('keydown',e=>{if(e.key==='Enter')window.addTask();});
+document.getElementById('t-title').addEventListener('input',()=>{document.getElementById('err-t').style.display='none';});
+
+window.toggleTask = async function(id){
+  if(viewUser!==currentUser) return;
+  const t=tasksData.find(x=>x.id===id);
+  if(t) await updateDoc(doc(db,`users/${currentUser}/tasks`,id),{done:!t.done});
+};
+window.delTask = async function(id){
+  if(viewUser!==currentUser) return;
+  await deleteDoc(doc(db,`users/${currentUser}/tasks`,id));
+  showToast('🗑️ Tâche supprimée');
+};
+window.setTF = function(f,btn){
+  tFilter=f;
+  document.querySelectorAll('#task-filters .fbtn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderTasks();
+};
+
+function renderTasks(){
+  const meta=USER_META[viewUser];
+  const total=tasksData.length, done=tasksData.filter(x=>x.done).length;
+  const high=tasksData.filter(x=>x.prio==='high'&&!x.done).length;
+  document.getElementById('s-total').textContent=total;
+  document.getElementById('s-done').textContent=done;
+  document.getElementById('s-high').textContent=high;
+
+  let list=tasksData;
+  if(tFilter==='active') list=tasksData.filter(x=>!x.done);
+  else if(tFilter==='done') list=tasksData.filter(x=>x.done);
+  else if(tFilter==='high') list=tasksData.filter(x=>x.prio==='high');
+
+  const el=document.getElementById('task-list');
+  if(!list.length){el.innerHTML=`<div class="empty-state"><div class="big">🎉</div><p>Aucune tâche ici</p></div>`;return;}
+  const isOwn=viewUser===currentUser;
+  el.innerHTML=list.map(t=>`
+    <div class="task-item${t.done?' done':''}">
+      <div class="chk" onclick="${isOwn?`toggleTask('${t.id}')`:''}" style="${isOwn?'cursor:pointer':'cursor:default'}">
+        <div class="chk-circle${t.done?' on':''}">
+          <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
+            <path d="M1 3.5L3.8 6.5L9 1" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </div>
+      <div class="task-body">
+        <div class="task-title">${t.title}</div>
+        <div class="meta-row">
+          <span class="badge ${PRIO[t.prio]?.cls||'p-med'}">${PRIO[t.prio]?.label||'🟡'}</span>
+          <span class="badge tag-badge">${t.tag||''}</span>
+          ${t.date?`<span class="date-chip">📅 ${fmt(t.date)}</span>`:''}
+        </div>
+      </div>
+      ${isOwn?`<button class="icon-btn" onclick="delTask('${t.id}')">🗑️</button>`:''}
+    </div>`).join('');
+}
+
+// ===== DEBTS =====
+window.addDebt = async function(){
+  const name=document.getElementById('d-name').value.trim();
+  const initial=parseFloat(document.getElementById('d-initial').value);
+  const err=document.getElementById('err-d');
+  if(!name||isNaN(initial)||initial<=0){err.style.display='block';return;} err.style.display='none';
+
+  const firstAmt=parseFloat(document.getElementById('d-first-amt').value)||0;
+  const firstDate=document.getElementById('d-first-date').value;
+  const acomptes=[];
+  if(firstAmt>0) acomptes.push({id:Date.now(),amount:Math.min(firstAmt,initial),date:firstDate});
+
+  await addDoc(collection(db,`users/${currentUser}/debts`),{
+    name, cat:document.getElementById('d-cat').value,
+    initial, note:document.getElementById('d-note').value.trim(),
+    acomptes, open:true, createdAt:Date.now()
+  });
+  ['d-name','d-initial','d-note','d-first-date'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('d-first-amt').value='0';
+  showToast('💰 Dette ajoutée !');
+};
+document.getElementById('d-name').addEventListener('input',()=>{document.getElementById('err-d').style.display='none';});
+
+window.setDF = function(f,btn){
+  dFilter=f;
+  document.querySelectorAll('#debt-filters .fbtn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderDebts();
+};
+
+window.toggleAccOpen = async function(id){
+  const d=debtsData.find(x=>x.id===id);
+  if(!d) return;
+  const isOwn=viewUser===currentUser;
+  if(!isOwn){
+    // read-only: toggle locally for UI only
+    d.open=!d.open; renderDebts(); return;
+  }
+  await updateDoc(doc(db,`users/${currentUser}/debts`,id),{open:!d.open});
+};
+
+window.addAcompte = async function(id){
+  if(viewUser!==currentUser) return;
+  const d=debtsData.find(x=>x.id===id);
+  if(!d) return;
+  const amt=parseFloat(document.getElementById('acc-amt-'+id)?.value);
+  const date=document.getElementById('acc-dt-'+id)?.value||'';
+  if(!amt||amt<=0) return;
+  const rest=restant(d);
+  const newAcc={id:Date.now(),amount:Math.min(amt,rest),date};
+  const updated=[...(d.acomptes||[]),newAcc];
+  await updateDoc(doc(db,`users/${currentUser}/debts`,id),{acomptes:updated});
+  showToast('💸 Acompte ajouté !');
+};
+
+window.delAcompte = async function(debtId,accId){
+  if(viewUser!==currentUser) return;
+  const d=debtsData.find(x=>x.id===debtId);
+  if(!d) return;
+  const updated=(d.acomptes||[]).filter(a=>a.id!==accId);
+  await updateDoc(doc(db,`users/${currentUser}/debts`,debtId),{acomptes:updated});
+  showToast('🗑️ Acompte supprimé');
+};
+
+window.delDebt = async function(id){
+  if(viewUser!==currentUser) return;
+  await deleteDoc(doc(db,`users/${currentUser}/debts`,id));
+  showToast('🗑️ Dette supprimée');
+};
+
+function renderDebts(){
+  const pending=debtsData.filter(x=>restant(x)>0);
+  const paid=debtsData.filter(x=>restant(x)<=0);
+  const grandTotal=pending.reduce((s,d)=>s+restant(d),0);
+  document.getElementById('d-grand-total').textContent=fmtN(grandTotal)+' DT';
+  document.getElementById('d-active').textContent=pending.length;
+  document.getElementById('d-paid-c').textContent=paid.length;
+  document.getElementById('d-all').textContent=debtsData.length;
+
+  let list=debtsData;
+  if(dFilter==='pending') list=debtsData.filter(x=>restant(x)>0);
+  else if(dFilter==='paid') list=debtsData.filter(x=>restant(x)<=0);
+
+  const el=document.getElementById('debt-list');
+  if(!list.length){el.innerHTML=`<div class="empty-state"><div class="big">👌</div><p>Aucune dette enregistrée</p></div>`;return;}
+  const isOwn=viewUser===currentUser;
+
+  el.innerHTML=list.map(d=>{
+    const paid_t=totalPaid(d), rest=restant(d), isPaid=rest<=0;
+    const pct=d.initial>0?Math.round((paid_t/d.initial)*100):0;
+    const accHTML=(d.acomptes||[]).map(a=>`
+      <div class="acc-entry">
+        <div class="acc-left">
+          <div class="acc-dot"></div>
+          <div>
+            <div class="acc-amt">+ ${fmtN(a.amount)} DT</div>
+            <div class="acc-date-lbl">${a.date?'📅 '+fmt(a.date):'Date non précisée'}</div>
+          </div>
+        </div>
+        ${isOwn?`<button class="acc-del-btn" onclick="delAcompte('${d.id}',${a.id})">✕</button>`:''}
+      </div>`).join('');
+
+    return`<div class="debt-card${isPaid?' paid-card':''}">
+      <div class="debt-top">
+        <div class="debt-head">
+          <div class="debt-name">👤 ${d.name} ${isPaid?'<span class="paid-tag">✅ Soldée</span>':''}</div>
+          ${isOwn?`<button class="icon-btn" onclick="delDebt('${d.id}')">🗑️</button>`:''}
+        </div>
+        <div class="meta-row" style="margin-bottom:8px">
+          <span class="debt-cat">${d.cat||''}</span>
+          ${d.note?`<span class="date-chip">📝 ${d.note}</span>`:''}
+        </div>
+        <div class="amounts-row">
+          <div class="amt-box"><div class="amt-lbl">Montant initial</div><div class="amt-val c-init">${fmtN(d.initial)} DT</div></div>
+          <div class="amt-box"><div class="amt-lbl">Payé</div><div class="amt-val c-paid">${fmtN(paid_t)} DT</div></div>
+          <div class="amt-box"><div class="amt-lbl">Reste</div><div class="amt-val ${isPaid?'c-zero':'c-rest'}">${fmtN(rest)} DT</div></div>
+        </div>
+        <div class="prog-wrap"><div class="prog-bar" style="width:${pct}%"></div></div>
+        <div class="prog-label">${pct}% remboursé · ${(d.acomptes||[]).length} acompte${(d.acomptes||[]).length!==1?'s':''}</div>
+      </div>
+      <div class="acc-section">
+        <div class="acc-toggle-row" onclick="toggleAccOpen('${d.id}')">
+          <span class="acc-toggle-lbl">📋 Acomptes (${(d.acomptes||[]).length})</span>
+          <span>${d.open?'▲':'▼'}</span>
+        </div>
+        ${d.open?`
+          <div class="acc-body">
+            ${(d.acomptes||[]).length?accHTML:'<div style="font-size:13px;color:var(--text3);padding:4px 0;font-weight:600">Aucun acompte enregistré.</div>'}
+          </div>
+          ${isOwn&&!isPaid?`
+          <div class="acc-add-row">
+            <input type="number" id="acc-amt-${d.id}" placeholder="Montant DT" min="0.5" step="0.5"/>
+            <input type="date" id="acc-dt-${d.id}"/>
+            <button class="btn-acc-add" onclick="addAcompte('${d.id}')">+ Ajouter</button>
+          </div>`:''}
+        `:''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ===== NOTIFS =====
+window.addNotif = async function(){
+  const title=document.getElementById('n-title').value.trim();
+  const date=document.getElementById('n-date').value;
+  const err=document.getElementById('err-n');
+  if(!title||!date){err.style.display='block';return;} err.style.display='none';
+  await addDoc(collection(db,`users/${currentUser}/notifs`),{
+    title,date,
+    type:document.getElementById('n-type').value,
+    note:document.getElementById('n-note').value.trim(),
+    done:false,createdAt:Date.now()
+  });
+  document.getElementById('n-title').value='';
+  document.getElementById('n-date').value='';
+  document.getElementById('n-note').value='';
+  showToast('🔔 Rappel ajouté !');
+};
+document.getElementById('n-title').addEventListener('keydown',e=>{if(e.key==='Enter')window.addNotif();});
+document.getElementById('n-title').addEventListener('input',()=>{document.getElementById('err-n').style.display='none';});
+
+window.toggleNotif = async function(id){
+  const n=notifsData.find(x=>x.id===id);
+  if(n) await updateDoc(doc(db,`users/${currentUser}/notifs`,id),{done:!n.done});
+};
+window.delNotif = async function(id){
+  await deleteDoc(doc(db,`users/${currentUser}/notifs`,id));
+  showToast('🗑️ Rappel supprimé');
+};
+
+function renderNotifs(){
+  const el=document.getElementById('notif-list');
+  if(!notifsData.length){
+    el.innerHTML=`<div class="empty-state"><div class="big">🔕</div><p>Aucun rappel configuré</p></div>`;return;
+  }
+  const today=notifsData.filter(n=>!n.done&&daysUntil(n.date)===0);
+  const past=notifsData.filter(n=>!n.done&&daysUntil(n.date)<0);
+  const upcoming=notifsData.filter(n=>!n.done&&daysUntil(n.date)>0);
+  const done=notifsData.filter(n=>n.done);
+
+  function cardHTML(n){
+    const days=daysUntil(n.date);
+    let badge='',badgeCls='';
+    if(n.done){badge='✅ Traité';badgeCls='nb-ok';}
+    else if(days===0){badge="⚡ Aujourd'hui";badgeCls='nb-warn';}
+    else if(days<0){badge=`⚠️ ${Math.abs(days)}j dépassé`;badgeCls='nb-danger';}
+    else{badge=`📅 Dans ${days}j`;badgeCls='nb-info';}
+    return`<div class="notif-card" style="${n.done?'opacity:.45':''}">
+      <div class="notif-icon">${TYPE_ICON[n.type]||'📌'}</div>
+      <div class="notif-body">
+        <div class="notif-title" style="${n.done?'text-decoration:line-through':''}">${n.title}</div>
+        <div class="notif-sub">📅 ${fmt(n.date)}${n.note?' · '+n.note:''}</div>
+      </div>
+      <span class="notif-badge ${badgeCls}">${badge}</span>
+      <button class="icon-btn" onclick="toggleNotif('${n.id}')" title="${n.done?'Rouvrir':'Traité'}">${n.done?'↩':'✅'}</button>
+      <button class="icon-btn" onclick="delNotif('${n.id}')">🗑️</button>
+    </div>`;
+  }
+  let html='';
+  if(today.length||past.length){html+='<div class="section-title">⚠️ À traiter</div>'; [...past,...today].forEach(n=>html+=cardHTML(n));}
+  if(upcoming.length){html+='<div class="section-title">📅 À venir</div>'; upcoming.forEach(n=>html+=cardHTML(n));}
+  if(done.length){html+='<div class="section-title">✅ Traités</div>'; done.forEach(n=>html+=cardHTML(n));}
+  el.innerHTML=html;
+}
+
+// init : hide loading (user must choose)
+showLoading(false);
+</script>
+</body>
+</html>
